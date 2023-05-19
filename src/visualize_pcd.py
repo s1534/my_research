@@ -2,8 +2,7 @@ import open3d as o3d
 import glob
 
 # データセット読み込み
-dataset = sorted(glob.glob('ply_data/0418/*'))
-
+dataset = sorted(glob.glob('data/0418/processed_data/*'))
 # ウィンドウ初期化
 vis = o3d.visualization.Visualizer()
 vis.create_window(
