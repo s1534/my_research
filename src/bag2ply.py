@@ -7,15 +7,15 @@ import os
 from pytz import timezone
 import matplotlib.pyplot as plt
 
-def my_makedirs(path):
+def make_dirs(path):
     if not os.path.isdir(path):
         os.makedirs(path)
 
 config = rs.config()
-bag_filename = 'D:/pointcloud/20221110/eating1.bag'
+bag_file = 'data/20230601/bag_data/cooking.bag'
 
 # ↓ ここでファイル名設定
-config.enable_device_from_file(bag_filename)
+config.enable_device_from_file(bag_file)
 
 # ストリーミング開始
 pipeline = rs.pipeline()
@@ -28,8 +28,7 @@ align_to = rs.stream.color
 align = rs.align(align_to)
 
 try:
-    num = 0
-    count =1
+    frame = 1
     while True:
         # フレーム待ち(Color & Depth)
         frames = pipeline.wait_for_frames()
@@ -50,22 +49,24 @@ try:
         depth = open3d.geometry.Image(depth_image)
 
         rgbd = open3d.geometry.RGBDImage.create_from_color_and_depth(color, depth, depth_scale=10000.0, depth_trunc=10000,convert_rgb_to_intensity = False)
-        pcd =  open3d.geometry.PointCloud.create_from_rgbd_image(rgbd, pinhole_camera_intrinsic)
+        ply =  open3d.geometry.PointCloud.create_from_rgbd_image(rgbd, pinhole_camera_intrinsic)
 
+        # 時刻設定
         utc_now = datetime.now(timezone('UTC'))
         jst_now = utc_now.astimezone(timezone('Asia/Tokyo'))
         ts = jst_now.strftime("%Y%m%d-%H%M%S")
         date = ts[:8]
         
         # ディレクトリが無いときは作成する
-        my_makedirs("data/"+date)
-        
-        # open3d.io.write_point_cloud("data/"+date+"/"+ts+".ply", pcd)
-        if num %15 == 0:
-            open3d.io.write_point_cloud("data/"+date+"/data"+str(count)+".ply", pcd)
-            count+=1
+        make_dirs("data/"+date+"/origin_ply")
 
-        num+=1
+        print(bag_file[:13])
+        ply_dir = bag_file[:13]
+        
+        open3d.io.write_point_cloud(ply_dir+'/origin_ply/'+str(frame)+".ply", ply)
+        # if num %15 == 0:
+        #     open3d.io.write_point_cloud("data/"+date+"/data"+str(count)+".ply", pcd)
+        #     count+=1
 
         # 確認用
         # Show images
@@ -81,10 +82,13 @@ try:
         plt.subplot(224)
         plt.title('color_image')
         plt.imshow(color_image)
-        # plt.show()
+        plt.show()
 
-        if num == 301:
+        if frame == 1:
             break
+        
+        frame += 1
+        
 
 finally:
     # Stop streaming

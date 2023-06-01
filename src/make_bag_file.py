@@ -1,8 +1,13 @@
 import json
 import open3d as o3d
 import keyboard
+import os
 
 config_filename = 'src/config.json'
+
+def make_dirs(path):
+    if not os.path.isdir(path):
+        os.makedirs(path)
 
 with open(config_filename) as cf:
     rs_cfg = o3d.t.io.RealSenseSensorConfig(json.load(cf))
