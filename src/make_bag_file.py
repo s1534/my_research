@@ -6,6 +6,7 @@ import datetime
 
 today = datetime.date.today()
 today_ymd = today.strftime('%Y%m%d')
+time = str(datetime.datetime.now().time())[:8]
 
 config_filename = 'src/config.json'
 
@@ -21,16 +22,17 @@ with open(config_filename) as cf:
 saving_dir = os.path.join('data',today_ymd)
 
 make_dirs(saving_dir)
-bagfile = os.path.join(saving_dir,'bag_data/cooking.bag')
+bagfile = 'bag_data/cooking-'+time+'.bag'
+bag_dir = os.path.join(saving_dir,bagfile)
 
 rs = o3d.t.io.RealSenseSensor()
-rs.init_sensor(rs_cfg, 0, bagfile)
+rs.init_sensor(rs_cfg, 0, bag_dir)
 rs.start_capture(True)  # true: start recording with capture
 
 while True:
     im_rgbd = rs.capture_frame(True, True)  # wait for frames and align them
     # process im_rgbd.depth and im_rgbd.color
-    if keyboard.read_key() == "q":
-        break
+    # if keyboard.read_key() == "q":
+        # break
 
 rs.stop_capture()
