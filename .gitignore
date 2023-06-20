@@ -2,4 +2,4 @@ data/
 Pipfile
 Pipfile.lock
 *.json
-tmp.py
+temp/

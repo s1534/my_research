@@ -4,17 +4,17 @@ import keyboard
 import os
 import datetime
 
-today = datetime.date.today()
-today_ymd = today.strftime('%Y%m%d')
-time = str(datetime.datetime.now().time())[:8]
-
-config_filename = 'src/config.json'
-
 def make_dirs(path):
     if not os.path.isdir(path):
         os.makedirs(path)
         os.makedirs(os.path.join(path,'bag_data'))
         os.makedirs(os.path.join(path,'origin_ply'))
+
+today = datetime.date.today()
+today_ymd = today.strftime('%Y%m%d')
+time = str(datetime.datetime.now().time())[:8]
+
+config_filename = 'src/config.json'
 
 with open(config_filename) as cf:
     rs_cfg = o3d.t.io.RealSenseSensorConfig(json.load(cf))
