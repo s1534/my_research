@@ -1,3 +1,5 @@
-bag_file = 'data/20230601/bag_data/cooking.bag'
+import datetime
 
-print(bag_file[:13])
+today = datetime.date.today()
+ymd = today.strftime('%Y%m%d')
+print(ymd)
