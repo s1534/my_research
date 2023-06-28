@@ -22,3 +22,4 @@ if __name__ == '__main__':
     for input_file in tqdm(files):
         print(input_file)
         pool.apply_async(process_one_file, folder, input_file)
+    
